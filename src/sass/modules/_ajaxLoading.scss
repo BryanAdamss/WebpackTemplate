@@ -1,0 +1,21 @@
+@charset "UTF-8";
+.c-AjaxLoading { // jQuery ajax全局loading样式
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    z-index: 99999999999;
+    //@include bgAlpha();
+    text-align: center;
+    > img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        max-width: 100px;
+    }
+}

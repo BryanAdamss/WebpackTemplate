@@ -1,0 +1,112 @@
+﻿@charset "UTF-8";
+//导入自定义变量
+@import "utils/_variablesCustom";
+// 导入默认变量
+@import "utils/_variables";
+// 导入函数
+@import "utils/_function";
+// 导入混合宏
+@import "utils/_mixins";
+// 导入占位样式
+@import "utils/_placeholders";
+// 导入normalize
+@import "base/_normalize";
+// 导入排版样式
+@import "base/_typography";
+// 导入媒体查询
+@import "layout/_mediaQuery";
+//@import "layout/_grid";// 旧网格
+@import "layout/_gridNew";
+// 导入助手样式
+@import "helpers/_helpers";
+// 导入模块
+@import "modules/_button";
+@import "modules/_form";
+@import "modules/_animate";
+@import "modules/_ajaxLoading";
+// 导入插件样式
+@import "vendors/_c_carousel";
+
+// 页面具体样式
+// 设置基本字体
+html {
+    @include htmlFont();
+}
+
+body {
+    background-color: #fff;
+    min-width: 1260px; // 针对IE8单独设置样式
+    @include ie8() {
+        background-color: blue;
+    } // 针对IE9单独设置样式
+    @include ie9() {
+        background-color: red;
+    }
+}
+
+//设置sticky-footer
+@include stickyFooter(60px);
+
+// 设置旧网格
+//.Grid {
+//    @include wrapper();
+//    @at-root #{&}-row {
+//        background-color: #ccc;
+//    }
+//}
+.bgPolka {
+    @include bgPolka(20px, 3px, tan, yellow);
+    width: 200px;
+    height: 200px;
+}
+
+.bgCheckboard {
+    @include bgCheckboard(20px, tan);
+    width: 200px;
+    height: 200px;
+}
+
+.text-3d {
+    @include text-3d();
+    font-size: 30px;
+    background-color: #28a;
+}
+
+.long-shadow {
+    background-color: #28a;
+    line-height: 4em;
+    font-size: 40px;
+    text-shadow: text-long-shadow();
+    color: #fff;
+}
+
+.c-TestNum {
+    @at-root #{&}-item {
+        @include n-items(1) {
+            color: red;
+        }
+
+        @include n-items(2) {
+            color: blue;
+        }
+
+        @include n-items(3) {
+            color: olive;
+        }
+    }
+}
+
+.c-Db {
+    @at-root #{&}-item {
+        @include DoubleWing(100, 200);
+        @at-root #{&}--main {
+            background-color: blue;
+        }
+        @at-root #{&}--left {
+            background-color: red;
+        }
+        @at-root #{&}--right {
+            background-color: olive;
+        }
+    }
+}

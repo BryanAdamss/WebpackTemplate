@@ -1,0 +1,72 @@
+@charset "UTF-8";
+button, [type="button"], [type="submit"], [type="reset"] {
+    @extend %noAppearance;
+}
+
+.c-Btn, .c-BorderBtn {
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%; // 实际宽度由外部网格容器来控制
+    padding: 0 .8em;
+    line-height: 2em;
+    height: 2em;
+    text-align: center;
+    @include inline-block();
+}
+
+a.c-Btn, a.c-BorderBtn {
+    text-decoration: none;
+    @extend %noCallOut;
+    @extend %noSelect;
+    @extend %noHighLight;
+}
+
+.c-Btn {
+    background-color: #999;
+    color: $mainButtonColor;
+    border: none;
+    @at-root #{&}:active {
+        // 点击颜色加深
+        box-shadow: 0 0 0px 1em rgba(0, 0, 0, 0.1) inset;
+    }
+    @at-root #{&}--primary {
+        // 实色按钮
+        background-color: $mainTone;
+        color: $mainButtonColor;
+    }
+    @at-root #{&}--radius {
+        // 圆角按钮
+        border-radius: $baseBorderRadius;
+    }
+    @at-root #{&}--round {
+        // 设置水平/垂直半径都为高度的一般即可实现round圆角
+        border-radius: 1em/1em;
+    }
+}
+
+.c-BorderBtn {
+    background-color: transparent;
+    color: #999;
+    border: 1px solid #999;
+    @at-root #{&}:active {
+        color: darken(#999, 10%);
+        border-color: darken(#999, 10%);
+    }
+    @at-root #{&}--primary {
+        color: $mainTone;
+        border-color: $mainTone;
+        @at-root #{&}:active {
+            color: darken($mainTone, 10%);
+            border-color: darken($mainTone, 10%);
+        }
+    }
+    @at-root #{&}--radius {
+        // 圆角按钮
+        border-radius: $baseBorderRadius;
+    }
+    @at-root #{&}--round {
+        // 设置水平/垂直半径都为高度的一般即可实现round圆角
+        border-radius: 1em/1em;
+    }
+}
+

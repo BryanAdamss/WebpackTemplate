@@ -1,0 +1,43 @@
+@charset "UTF-8";
+// 默认变量
+// 开关设置
+//-----------------------------------------------------
+$lte7: true !default; //是否兼容ie6-7
+$filter: true !default; //是否为ie6-8开启css3滤镜兼容，常用于渐变背景
+$printStyleSwitch: false !default; //是否开启打印样式
+
+// font相关
+//-----------------------------------------------------
+// html基础字体样式及大小
+$baseFontPC: 14px/1.4286 arial,\5b8b\4f53,"Hiragino Sans GB", "Microsoft YaHei",sans-serif !default; //PC端,$pageType为PC
+$baseFontMobile: 16px/1.5 "Helvetica Neue", Helvetica, STHeiTi, sans-serif !default; //移动端固定字体大小,$pageType为M
+$baseFontMobileRem: 5vw/1.5 "Helvetica Neue", Helvetica, STHeiTi, sans-serif !default; //移动端基于视口的字体大小,$pageType为MR
+// 常用字体
+$fontSong: \5b8b\4f53 !default; //宋体
+$fontYaHei: "Microsoft YaHei" !default;//微软雅黑
+
+// 颜色
+//-----------------------------------------------------
+// 页面主要色调
+$mainTone: #3da4fe !default;
+$subTone: #fe6e00 !default;
+// 文字颜色
+$mainTextColor: #666 !default;
+$subTextColor: #ccc !default;
+// 边框颜色
+$baseBorderColor: #c7c7c7 !default;
+// 按钮文字颜色
+$mainButtonColor:#fff !default;
+// 辅助颜色
+$dangerColor: #a94442 !default;
+$warnningColor: #8a6d3b !default;
+// 文字大小
+$baseFontSize: 16px !default;
+// 间隙
+$baseGap: 20px !default;
+// 行高
+$baseLineH:26px !default;
+// 圆角
+$baseBorderRadius:3px !default;
+// 设计图尺寸，用于px2rem
+$designWidth:640px !default;

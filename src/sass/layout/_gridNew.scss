@@ -1,0 +1,107 @@
+@charset "UTF-8";
+// 1.将col限制在row中(col外围必须有row包裹，否则不生效)；
+// 2.采用inline-block布局，相较于float布局灵活性更强，可通过$gridVerticalAlign设置垂直居中方式，可通过text-align实现列在row中的居中；
+// 3.因为采用inline-block布局，所以父元素(row)必须设置font-size:0来去除间隙，这也是1的原因；
+// 4.没有采用传统的margin产生见习，而是使用padding产生间隙，计算起来更加方便，不用考虑因为添加margin导致过长的现象；
+// 5.由小屏幕往大屏幕设计的理念，所以mq采用的是min-width而不是max-width，只有在<768时使用max-width，对列采用堆叠处理
+$gridColumns: 24 !default; // 总列数，默认24列
+$gridGutter: 1em !default; // 默认沟槽宽度1em
+$gridVerticalAlign: top !default; // 列垂直对齐方式，默认顶端对齐
+
+// 断点
+$bp_phone:47.935em !default;
+$bp_pad:48em !default;
+$bp_retinaPad:64em !default;
+$bp_pc:80em !default;
+
+@function getPercent($i,$container-columns:$gridColumns) { // 返回所占百分比
+    $percentage: percentage($i / $container-columns);
+    @return $percentage;
+}
+
+.c-Row {
+    font-size: 0;
+    [class*="c-Row-col"] { // 选择class中包含c-Row-col单词的元素
+        padding-left: $gridGutter/2;
+        padding-right: $gridGutter/2;
+        @include inline-block($gridVerticalAlign);
+        // .c-Row设置font-size:0,所以列使用inital设置回浏览器默认值
+        font-size: initial;
+        font-size: 16px\9;
+        // 由于在c-Row上可能应用u-textC来居中列，所以在列中将text-align置回正常值
+        text-align: left;
+        position: relative;
+        // 移除首个和最后个的padding
+        @at-root #{&}:first-of-type{
+            padding-left:0;
+        }
+        @at-root #{&}:last-of-type{
+            padding-right:0;
+        }
+    }
+    @at-root #{&}--vAlign{
+        [class*="c-Row-col"]{
+            vertical-align: middle;
+        }
+    }
+    // 所有屏幕尺寸都会应用这个样式
+    @for $i from 1 through $gridColumns {
+        .c-Row-col#{$i} {
+            width: getPercent($i, $gridColumns);
+        }
+        @if $i <$gridColumns {
+            .c-Row-colOffset#{$i} {
+                margin-left: getPercent($i, $gridColumns);
+            }
+        }
+    }
+
+    //<768 (<=767视为Phone)，除列为col-6、col-8、col-12、col-24外都采取堆叠
+    @include mq($max-width: $bp_phone) {
+        [class*="c-Row-col"]:not([class~="c-Row-col6"],[class~="c-Row-col8"],[class~="c-Row-col12"],[class~="c-Row-col24"]) {
+            width: 100%;
+        }
+    }
+
+    // sm >=768 (>=768 && <1024视为Pad)
+    @include mq($min-width:$bp_pad) {
+        @for $i from 1 through $gridColumns {
+            .c-Row-col#{$i}--sm {
+                width: getPercent($i, $gridColumns);
+            }
+            @if $i <$gridColumns {
+                .c-Row-colOffset#{$i}--sm {
+                    margin-left: getPercent($i, $gridColumns);
+                }
+            }
+        }
+    }
+
+    // md >=1024 (>=1024 && <1280视为retina Pad)
+    @include mq($min-width: $bp_retinaPad) {
+        @for $i from 1 through $gridColumns {
+            .c-Row-col#{$i}--md {
+                width: getPercent($i, $gridColumns);
+            }
+            @if $i <$gridColumns {
+                .c-Row-colOffset#{$i}--md {
+                    margin-left: getPercent($i, $gridColumns);
+                }
+            }
+        }
+    }
+
+    // lg >=1280 (>=1280视为PC)
+    @include mq($min-width:$bp_pc) {
+        @for $i from 1 through $gridColumns {
+            .c-Row-col#{$i}--lg {
+                width: getPercent($i, $gridColumns);
+            }
+            @if $i <$gridColumns {
+                .c-Row-colOffset#{$i}--lg {
+                    margin-left: getPercent($i, $gridColumns);
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,363 @@
+@charset "UTF-8";
+// 选择文本样式
+@mixin selection($bgColor:#e74c3c, $color:#ecf0f1) {
+    ::selection {
+        background-color: $bgColor;
+        color: $color;
+    }
+    ::-moz-selection {
+        background-color: $bgColor;
+        color: $color;
+    }
+    ::-webkit-selection {
+        background-color: $bgColor;
+        color: $color;
+    }
+}
+
+// 设置retina一像素，父元素设置relative
+@mixin setTopLine($c: #C7C7C7) {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 1px;
+    border-top: 1px solid $c;
+    color: $c;
+    transform-origin: 0 0;
+    transform: scaleY(0.5);
+}
+
+@mixin setBottomLine($c: #C7C7C7) {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px solid $c;
+    color: $c;
+    transform-origin: 0 100%;
+    transform: scaleY(0.5);
+}
+
+@mixin setLeftLine($c: #C7C7C7) {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    border-left: 1px solid $c;
+    color: $c;
+    transform-origin: 0 0;
+    transform: scaleX(0.5);
+}
+
+@mixin setRightLine($c: #C7C7C7) {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    border-right: 1px solid $c;
+    color: $c;
+    transform-origin: 100% 0;
+    transform: scaleX(0.5);
+}
+
+// 浮动
+@mixin float($side:left) {
+    float: unquote($side);
+    @if $lte7 {
+        _display: inline;
+    }
+}
+
+// 设置html基本字体样式
+@mixin htmlFont($pageType:PC) {
+    @if (unquote($pageType)==PC) {
+        font-size: 16px;
+        line-height: 1.625;
+        font-family: $baseFontPC;
+    } @else {
+        font-size: ($designWidth/10)/($designWidth/2)*100vw; // 设计图750，默认1rem为7.5，所以通过这种方式将html的font-size设置为75px，配套的px2rem中1rem也为75px；如果设置为font-size为7.5，可以做到rem、vw最终得到相同的px值，但是因为有字体大小限制(最小12px)，所以只能使用75px
+        line-height: 1.5;
+        font-family: $baseFontMobile; // 为了不让基准字体无限变大或变小破坏布局，所以必须做一个限制
+        @media screen and (max-width: 320px) {
+            // <320时字体统统为64px
+            font-size: 64px;
+        }
+        @media screen and (min-width: 640px) {
+            // >640时字体统统为128px
+            font-size: 128px;
+        }
+    }
+}
+
+// 因为在移动端html的字体是根据视口变化的，所以body字体大小需要重新设置，让子元素能继承
+@mixin bodyFontSize($pageType:M) {
+    @if (unquote($pageType)==M) {
+        font-size: 16px;
+        @media screen and (min-width: 375px) {
+            // iPhone6的375px尺寸作为16px基准，414px正好18px大小, 600 20px
+            font-size: calc(100% + 2 * (100vw - 375px) / 39);
+            font-size: calc(16px + 2 * (100vw - 375px) / 39);
+        }
+
+        @media screen and (min-width: 414px) {
+            /// 414px-1000px每100像素宽字体增加1px(18px-22px)
+            font-size: calc(112.5% + 4 * (100vw - 414px) / 586);
+            font-size: calc(18px + 4 * (100vw - 414px) / 586);
+        }
+
+        @media screen and (min-width: 600px) {
+            // 600px-1000px每100像素宽字体增加1px(20px-24px)
+            font-size: calc(125% + 4 * (100vw - 600px) / 400);
+            font-size: calc(20px + 4 * (100vw - 600px) / 400);
+        }
+
+        @media screen and (min-width: 1000px) {
+            // 1000px往后是每100像素0.5px增加
+            font-size: calc(137.5% + 6 * (100vw - 1000px) / 1000);
+            font-size: calc(22px + 6 * (100vw - 1000px) / 1000);
+        }
+        // body 也增加最大最小宽度限制，避免默认100%宽度的 block 元素跟随 body 而过大过小，并让其居中
+        max-width: 640px;
+        min-width: 320px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+// 表单禁用样式
+@mixin disabled($bgColor: #e6e6e6, $textColor:#ababab) {
+    background-color: $bgColor !important;
+    color: $textColor !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+}
+
+// 设置过渡效果
+@mixin transtion($transition-property:all) {
+    transition: $transition-property .3s ease-in-out;
+}
+
+// 设置透明度
+@mixin opacity($opacity:50) {
+    opacity: $opacity / 100;
+    @if $filter {
+        filter: alpha(opacity=$opacity);
+    }
+}
+
+// 设置黑色半透明背景
+@mixin bgAlpha($bgcolor: rgba(0, 0, 0, .5)) {
+    @if $filter {
+        filter: progid:DXImageTransform.Microsoft.gradient(enabled='true', startColorstr='#{ie-hex-str($bgcolor)}', endColorstr='#{ie-hex-str($bgcolor)}');
+    } @else {
+        background-color: #333;
+    }
+    background-color: $bgcolor;
+}
+
+// 文本截取(单行、多行,截取宽度)
+@mixin ellipsis($line: 1, $substract: 0) {
+    @if $line==1 {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    } @else {
+        display: -webkit-box;
+        -webkit-line-clamp: $line;
+        -webkit-box-orient: vertical;
+    }
+    width: 100% - $substract;
+    overflow: hidden;
+}
+
+// stickyFooter
+@mixin stickyFooter($footerH, $wp:unquote(".c-Sticky"), $content:unquote(".c-Sticky-bd"), $footer:unquote(".c-Sticky-ft")) {
+    html,
+    body {
+        height: 100%;
+    }
+    #{$wp} {
+        min-height: 100%;
+        @if $lte7 {
+            /*IE6不识别min-height*/
+            height: auto !important;
+            height: 100%;
+        }
+        position: relative;
+    }
+    #{$content} {
+        overflow: auto;
+        padding-bottom: $footerH;
+    }
+    #{$footer} {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+    }
+}
+
+//设置inline-block
+@mixin inline-block($alignment: middle) {
+    display: inline-block;
+    @if $alignment and $alignment !=none {
+        vertical-align: $alignment;
+    }
+    @if $lte7 {
+        *vertical-align: auto;
+        *zoom: 1;
+        *display: inline;
+    }
+}
+
+// 设置移动端不同dpr屏幕下的字体大小
+@mixin fontSize($font-size) {
+    font-size: $font-size * 1px;
+    [data-dpr="1"] & {
+        font-size: $font-size * .5px;
+    }
+    [data-dpr="2"] & {
+        font-size: $font-size * 1px;
+    }
+    [data-dpr="3"] & {
+        font-size: $font-size * 1.5px;
+    }
+}
+
+// 设置双飞翼布局
+@mixin DoubleWing($leftWidth, $rightWidth) {
+    &{
+        @include clearfix();
+    }
+
+    &--main {
+        @include float();
+        width: 100%;
+
+    }
+    &--mainInner{
+        margin-left: $leftWidth+px;
+        margin-right: $rightWidth+px;
+    }
+
+    &--left {
+        @include float();
+        width: $leftWidth+px;
+        margin-left: -100%;
+    }
+    &--right {
+        @include float();
+        width: $rightWidth+px;
+        margin-left: -$rightWidth+px;
+    }
+}
+
+
+
+// 针对ie8设置样式
+@mixin ie8() {
+    .ie8 & {
+        @content;
+    }
+}
+
+// 针对ie9设置样式
+@mixin ie9() {
+    .ie9 & {
+        @content;
+    }
+}
+
+// 波点背景(通过径向渐变生成，IE10+)
+@mixin bgPolka($size, $dot, $base, $accent) {
+    // 单独一个波点图所占空间，波点半径，波点图背景色，波点的颜色
+    background-color: $base;
+    background-image: radial-gradient($accent $dot, transparent 0), radial-gradient($accent $dot, transparent 0);
+    background-size: $size $size;
+    background-position: 0 0, $size/2 $size/2;
+}
+
+// 棋盘背景(通过线性渐变生成，IE9+)
+@mixin bgCheckboard($size, $base, $accent:rgba(0, 0, 0, .25)) {
+    // 单个棋格子大小，棋盘背景色，棋格颜色
+    background-color: $base;
+    background-image: linear-gradient(45deg, $accent 25%, transparent 0, transparent 75%, $accent 0), linear-gradient(45deg, $accent 25%, transparent 0, transparent 75%, $accent 0);
+    background-size: 2*$size 2*$size;
+    background-position: 0 0, $size $size;
+}
+
+// 斜向切角
+@mixin bevelCorners($bg, $tl:0, $tr:$tl, $br:$bl, $bl:$tr) {
+    // 背景色，tl切角，tr切角，br切角，bl切角
+    background-color: $bg;
+    background: linear-gradient(135deg, transparent $tl, $bg 0) top left,
+    linear-gradient(225deg, transparent $tr, $bg 0) top right,
+    linear-gradient(45deg, transparent $tr, $bg 0) bottom right,
+    linear-gradient(-45deg, transparent $tr, $bg 0) bottom left;
+    background-size: 50% 50%;
+    background-repeat: no-repeat;
+}
+
+// 弧形切角
+@mixin scoopCorners($bg, $tl:0, $tr:$tl, $br:$bl, $bl:$tr) {
+    // 背景色，tl切角，tr切角，br切角，bl切角
+    background-color: $bg;
+    background: radial-gradient(circle at top left, transparent $tl, $bg 0) top left,
+    radial-gradient(circle at top right, transparent $tr, $bg 0) top right,
+    radial-gradient(circle at bottom right, transparent $br, $bg 0) bottom right,
+    radial-gradient(circle at bottom left, transparent $bl, $bg 0) bottom left;
+    background-size: 50% 50%;
+    background-repeat: no-repeat;
+}
+
+// 图片保持宽高比
+@mixin aspectRatio($width:16, $height:9) {
+    // 默认16:9
+    @at-root #{&}::before {
+        content: "";
+        float: left; // 元素需要浮动，不然后面元素需要使用绝对定位
+        height: 0; // 本身高度必须置0
+        padding-top: percentage($height/$width); // 使用padding-top撑起高度
+    }
+    @at-root #{&}::after {
+        // 清除浮动
+        content: "";
+        display: table;
+        clear: both;
+    }
+}
+
+// 3d文字
+@mixin text-3d($color:white, $depth:5) {
+    // 阴影颜色，深度
+    $shadows: ();
+    $shadow-color: $color;
+
+    @for $i from 1 through $depth {
+        $shadow-color: darken($shadow-color, 10%);
+        $shadows: append($shadows, 0 ($i * 1px) $shadow-color, comma);
+    }
+
+    color: $color;
+    text-shadow: append($shadows, 0 ($depth * 1px) 10px black, comma)
+}
+
+// 根据元素数量选择元素
+@mixin n-items($n) {
+    @if $n==1 {
+        &:only-child {
+            @content;
+        }
+    } @else {
+        &:first-child:nth-last-child(#{$n}),
+        &:first-child:nth-last-child(#{$n}) ~ & {
+            @content;
+        }
+    }
+}

@@ -1,0 +1,70 @@
+@charset "UTF-8";
+//导入自定义变量
+@import "utils/_variablesCustom-m";
+// 导入默认变量
+@import "utils/_variables";
+// 导入函数
+@import "utils/_function";
+// 导入混合宏
+@import "utils/_mixins";
+// 导入占位样式
+@import "utils/_placeholders";
+// 导入normalize
+@import "base/_normalize";
+// 导入排版样式
+@import "base/_typography";
+// 导入媒体查询
+@import "layout/_mediaQuery";
+// 导入助手样式
+@import "helpers/_helpers";
+// 导入模块
+@import "modules/_button";
+@import "modules/_form";
+@import "modules/_animate";
+// 导入第三方库
+@import "vendors/_weui-1.1.1";
+@import "vendors/_mobiscroll-2.17.0";
+// 页面具体样式
+// 设置基本字体
+html {
+    @include htmlFont(M);
+    height: 100%;
+}
+
+body {
+    @include bodyFontSize(M);
+    background-color: #fff;
+    height: 100%;
+    border: 1px solid red;
+}
+
+.c-Main {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    @at-root #{&}-hd {
+        flex: 0 0 auto;
+    }
+    @at-root #{&}-bd {
+        flex: 1 1 auto;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    @at-root #{&}-ft {
+        flex: 0 0 auto;
+    }
+}
+
+
+.c-Box {
+    margin-top: rem(10px);
+    border: 1px solid #ccc;
+    width: rem(375px);
+    font-size: rem(24px);
+}
+
+.c-TestAspectRatio {
+    width: 80%;
+    border: 1px solid blue;
+    @include aspectRatio(160, 80);
+}

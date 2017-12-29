@@ -1,0 +1,154 @@
+@charset "UTF-8";
+//-----------------------------------------------------
+// grid scss
+// 支持固定宽度和百分比宽度,可以控制是否输出span的class
+//-----------------------------------------------------
+// 我这里设计的是个小屏幕100%宽，max-width:1260px
+// (85+20)*12=1260
+//-----------------------------------------------------
+$gridColumns: 12 !default; // 总栅格数,默认为12栏
+$gridColumnWidth: 85px !default; // column,单栏宽度,默认为85px
+$gridGutter: 20px !default; // 栏之间的间隙,默认为20px
+$gridSystemWidth: $gridColumns * ($gridColumnWidth + $gridGutter); //整体总宽度为$gridColumns * ($gridColumnWidth + $gridGutter)=(85+20)*12=1260
+$gridSetMaxWidth:true !default; // 是否设置网格的最大宽度(max-width)为$gridSystemWidth，默认为true，设置最大宽度
+// percent layout setting
+// 百分比布局的变量设置
+//-----------------------------------------------------
+$gridPercentSwitch: true !default; // 百分比固定切换开关.默认为百分比布局,设置false为固定
+$gridRealWidth: $gridSystemWidth !default; //整体实际宽度,默认为$gridSystemWidth(1260px),如果是流体布局则为100%
+$gridGutterPercent: percentage($gridGutter / $gridSystemWidth) !default; //沟槽百分比=沟槽固定宽度/网格系统宽度=20/1260=1.5873%
+@if $gridPercentSwitch {
+    //如果启用百分比布局,则网格实际宽度为100%
+    $gridRealWidth: 100%;
+}
+
+//IE67有个取值策略的问题,它会上取整,1.5或者1.75会变成2,进而破坏布局,修复方法为最后减去一个调整比例
+//以下两个变量为ie6,7百分比宽度整好合适的话,有时会掉下去,而提供的修复变量,
+//可参考:http://tylertate.com/blog/2012/01/05/subpixel-rounding.html
+$gridMinWidth: 1260 !default; //最小宽度,默认值为固定的整体宽度1000px
+$gridCorrection: 0.5 / $gridMinWidth * 100 * 1%; //调整比例,值为:0.5 / $gridMinWidth * 100 * 1%
+// margin value
+//-----------------------------------------------------
+//如果为固定宽度布局则为$gridGutter,否则为$gridGutterPercent
+//if()三目判断
+$gridMarginValue: if($gridPercentSwitch, $gridGutterPercent, $gridGutter) !default;
+//是否开启grid class(.span1, .span2...),默认开启
+// ----------------------------------------
+$gridSpanSwitch: true !default;
+// 这个函数几乎是blankwork的灵魂,用来计算宽度的
+// 这是一个用来计算宽度固定值的函数,可传递参数为:$i,$onlyInnerWidth(可选,默认值为true),$subtract(可选,默认值为0)。
+// 第一个参数$i为必填,表示栏数,注意传入的参数不能大于$gridColumns栏数；
+// 第二个参数$onlyInnerWidth为可选,可设置true或false,true表示去掉1个间隙值,false表示不去掉；
+// 第三个参数$subtract为可选,用来微调宽度,因为不是所有的宽度都是正好的栅格数,所以可以通过这个来进行微调。
+// width:getWidth();//(85+20)*12-20=1240px;
+// width:getWidth(3);//(85+20)*3-20=295px;
+// width:getWidth(3,true);//(85+20)*3-20=295px;
+// width:getWidth(3,false);//(85+20)*3=315px;
+// width:getWidth(3,false,40);//(85+20)*3-40=275px;
+// 注:以下很多需要宽度计算的,都是内部调用该函数来实现的,所以说该函数是整个栅格化的灵魂。
+@function getWidth($i:$gridColumns, $onlyInnerWidth:true, $subtract:0) {
+    // 设置一个默认返回值
+    $return: (($gridColumnWidth + $gridGutter) * $i / $gridSystemWidth) * $gridRealWidth - $subtract !default;
+    // 会在默认返回值的基础上减去一个间隙(20px)
+    @if $onlyInnerWidth==true {
+        $return: ((($gridColumnWidth + $gridGutter) * $i - $gridGutter) / $gridSystemWidth) * $gridRealWidth - $subtract;
+    }
+    @return $return;
+}
+
+// A Function to calculate percent width:
+//这是一个用来计算宽度百分比的函数,可传递参数为:$i,$container-columns,$onlyInnerWidth(可选,默认值为true),$subtract(可选,默认值为0)。
+//第一,三,四参数和上面的getWidth一样,至于第二个参数表示所要占的容器栏数。如一个3栏子元素占6栏的父元素的百分比。这个一般用于百分比布局。
+@function getPercent($i, $container-columns:$gridColumns, $onlyInnerWidth:true, $subtract:0) {
+    $percentage: percentage($i / $container-columns);
+    @if $onlyInnerWidth==true {
+        $width: $i * $gridColumnWidth + ($i - 1) * $gridGutter;
+        $container-width: $container-columns * $gridColumnWidth + ($container-columns - 1) * $gridGutter;
+        $percentage: percentage($width / $container-width);
+    }
+    @return $percentage - $subtract;
+}
+
+// span or column's gutter
+// 这个是以%定义的,设置margin-right为$gridMarginValue。
+%margin-gutter {
+    //设置每列的左右margin
+    margin-right: $gridMarginValue/2;
+    margin-left: $gridMarginValue/2;
+    @if $gridPercentSwitch and $lte7 {
+        //修复ie7以下并是百分比布局时的取值策略bug
+        *margin-left: ($gridMarginValue/2) - $gridCorrection;
+        *margin-right: ($gridMarginValue/2) - $gridCorrection;
+    }
+}
+
+// wrapper
+// wrapper里面定义了宽度,清除子元素浮动,及是否水平居中。其中闭合子元素浮动使用@extend %clearfix,而是否水平居中通过传参来判断是否使用@extend center-block。 可传入三个参数:$i,$center（可选,默认为true）,$subtract（可选,默认为0）。其中$center可取true或false,表示是否居中。
+//内部调用的getWidth函数,$onlyInnerWidth为false。
+@mixin wrapper($i: $gridColumns, $center:true, $subtract:0) {
+    // 由于我的每个col(左浮动)必须放在Wp-row中,所以Wp-row需清除浮动
+    @at-root #{&}-row {
+        @include clearfix();
+    }
+    // 设置Wp的宽度
+    $getWrapperWidth: getWidth($i, false);
+    $wrapperWidth: $getWrapperWidth - $subtract;
+    width: $wrapperWidth;
+    // 设置最大宽度
+    @if ($gridSetMaxWidth) {
+        max-width: $gridSystemWidth;
+    }
+    // 设置居中
+    @if $center==true {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+//column一般用于子元素,有浮动和margin左右,所以计算宽度时设置$onlyInnerWidth为true,即减掉左右的margin,而wrapper一般用于父元素,得用来闭合子元素的浮动,然后可能会需要居中对齐,所以计算宽度时设置$onlyInnerWidth为false。当然宽度不可能每次都是恰好的,所有有了$subtract来微调,你也可以根据你的项目直接使用getWidth这个函数,而不必使用这些mixin什么的,关键在于灵活运用。
+//这个是以@mixin定义的,里面定义了width,左右margin及左浮动。其中左右margin是使用@extend %margin-gutter,而左浮动是使用@extend %float(我的浮动是用mixin定义的,所以不用extend),所以它们分别使用联合申明。可传入两个参数$i,$subtract（可选,默认为0）。
+//内部调用的getWidth函数,$onlyInnerWidth为默认的true。
+@mixin col($i: $gridColumns, $subtract:0) {
+    // 解决当$i 小于$gridColumns的时候需要float
+    @if $i < $gridColumns {
+        // 列浮动
+        @include float();
+    }
+    // 设置间距
+    @extend %margin-gutter;
+    // 设置列宽
+    $getWidth: getWidth($i, true, $subtract);
+    width: $getWidth;
+    @if $gridPercentSwitch and $lte7 {
+        *width: $getWidth - $gridCorrection;
+    }
+}
+
+// prepend & append
+// prepend定义margin-left的距离,append定义margin-right的距离,都可以传入两个参数:$i,$subtract（可选,默认为0）。
+// 内部调用的getWidth函数,$onlyInnerWidth为fasle。
+//-----------------------------------------------------
+@mixin prepend($i:1, $subtract:0) {
+    margin-left: getWidth($i, false, $subtract);
+}
+
+@mixin append($i:1, $subtract:0) {
+    margin-right: getWidth($i, false, $subtract);
+}
+
+// class span1-$gridColumns
+// span的class循环输出,通过变量$gridSpanSwitch来控制是否输出
+// 如果设置$gridSpanSwitch为true了,将会以类的方式输出.span1 {width: 65px;}.span2 {width: 150px;}
+//-----------------------------------------------------
+@if $gridSpanSwitch {
+    @for $i from 1 through $gridColumns {
+        .Grid-col#{$i} {
+            @include float();
+            @extend %margin-gutter;
+            width: getWidth($i);
+            @if $gridPercentSwitch and $lte7 {
+                *width: getWidth($i) - $gridCorrection;
+            }
+        }
+    }
+}

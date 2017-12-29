@@ -1,0 +1,46 @@
+@charset "UTF-8";
+// 默认变量
+// 开关设置
+//-----------------------------------------------------
+$lte7: true; //是否兼容ie6-7
+$filter: true; //是否为ie6-8开启css3滤镜兼容，常用于渐变背景
+$printStyleSwitch: false; //是否开启打印样式
+// 旧网格相关
+//-----------------------------------------------------
+$gridSetMaxWidth: true; // 是否设置网格的最大宽度
+// 新网格相关
+//-----------------------------------------------------
+$gridColumns: 24; // 总列数，默认24列
+$gridGutter: 1em; // 默认沟槽宽度1em
+$gridVerticalAlign: top; // 列垂直对齐方式，默认顶端对齐
+// font相关
+//-----------------------------------------------------
+// html基础字体样式
+$baseFontPC:arial, \5b8b\4f53, "Hiragino Sans GB", "Microsoft YaHei", sans-serif; //PC端,$pageType为PC
+// 常用字体
+$fontSong: \5b8b\4f53; //宋体
+$fontYaHei: "Microsoft YaHei"; //微软雅黑
+
+// 颜色
+//-----------------------------------------------------
+// 页面主要色调
+$mainTone: #3da4fe;
+$subTone: #fe6e00;
+// 文字颜色
+$mainTextColor: #666;
+$subTextColor: #ccc;
+// 边框颜色
+$baseBorderColor: #c7c7c7;
+// 按钮文字颜色
+$mainButtonColor: #fff;
+// 辅助颜色
+$dangerColor: #a94442;
+$warnningColor: #8a6d3b;
+// 文字大小
+$baseFontSize: 16px;
+// 间隙
+$baseGap: 20px;
+// 圆角
+$baseBorderRadius: 3px;
+// 行高
+$baseLineH: 26px;

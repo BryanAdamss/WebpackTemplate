@@ -1,0 +1,80 @@
+@charset "UTF-8";
+
+// 为颜色添加白色，以百分比形式
+@function tint($color, $percent) {
+    @return mix(white, $color, $percent);
+}
+
+// 为颜色添加黑色，以百分比形式
+@function shade($color, $percent) {
+    @return mix(black, $color, $percent);
+}
+
+// 计算百分比
+@function calc-percent( $target, $context ) {
+    @return $target / $context * 100%;
+}
+
+//黄金比例确切值为(√5-1)/2=0.618033,
+//(a+b)/a=a/b;->a=1.618*b;b=0.618*a;
+//黄金分割奇妙之处，在于其比例与其倒数是一样的。例如：1.618的倒数是0.618，而1.618:1与1:0.618是一样的。
+
+//行高缩放因子lineHeightRatio,黄金比例goldenRatio,字体大小fontSize,实际内容宽width,理想(最优)内容宽widthOptimal,行高lineHeight
+//理想内容宽widthOptimal=(fontSize*goldenRatio)*(fontSize*goldenRatio)即(字体大小x黄金比例)的平方
+//行高缩放因子lineHeightRatio=goldenRatio-(1/(2*goldenRatio))*(1-(width/widthOptimal))
+//行高lineHeight=fontSize*lineHeightRatio;
+
+//给定字体大小fontSize和实际内容宽度width,求合适的行高lineHeight
+//公式lineHeight=fontSize*lineHeightRatio=fontSize*goldenRatio-(1/(2*goldenRatio))*(1-(width/(fontSize*goldenRatio)*(fontSize*goldenRatio)))
+$goldenRatio: 1.618033 !default;
+@function calcLineH($fontSize,$width) {
+    @return floor($fontSize*($goldenRatio -(1/(2*$goldenRatio))*(1-($width/($fontSize*$goldenRatio*$fontSize*$goldenRatio))))) px;
+}
+
+//给定字体大小fontSize和lineHeight,求实际宽度width
+//公式width=widthOptimal*(1+2*goldenRatio((lineHeight/fontSize)-goldenRatio))
+@function calcW($fontSize,$lineHeight) {
+    @return floor(($fontSize*$goldenRatio*$fontSize*$goldenRatio)*(1+2*$goldenRatio*(($lineHeight/$fontSize)-$goldenRatio))) px;
+}
+
+// px2em
+@function em($px, $base-font-size: 16px) {
+    @if (unitless($px)) { // 不带单位时，则假设它为px单位，进而转换成px单位并重新转em
+        @warn "Assuming #{$px} to be in pixels, attempting to convert it into pixels for you";
+        @return em($px + 0px);
+    } @else if (unit($px) == em) {
+        @return $px;
+    }
+    @return ($px / $base-font-size) * 1em;
+}
+
+// px转rem
+@function rem($px) {
+    @if (unitless($px)) { // 不带单位时，则假设它为px单位，进而转换成px单位并重新转rem
+        @warn "Assuming #{$px} to be in pixels, attempting to convert it into pixels for you";
+        @return rem($px + 0px);
+    } @else if (unit($px) == rem) {
+        @return $px;
+    }
+    @return ($px/2)/($designWidth/10)*1rem; // 750设计图上默认1rem为75px，量出来的px得先除以2再和rem相除
+}
+
+// px转vw
+@function vw($px) {
+    @if (unitless($px)) { // 不带单位时，则假设它为px单位，进而转换成px单位并重新转vw
+        @warn "Assuming #{$px} to be in pixels, attempting to convert it into pixels for you";
+        @return vw($px + 0px);
+    } @else if (unit($px) == vw) {
+        @return $px;
+    }
+    @return ($px / $designWidth)*100vw;
+}
+
+// 文字长阴影
+@function text-long-shadow($color:black,$depth:8) {
+    $shadows: (1px 1px $color,);
+    @for $i from 2 through $depth {
+        $shadows: append($shadows, ($i*1px) ($i*1px) $color, comma);
+    }
+    @return $shadows;
+}

@@ -1,0 +1,54 @@
+@charset "UTF-8";
+.c-Carousel {
+    position: relative;
+    @at-root #{&}-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transform: translateZ(0px);
+        z-index: 999;
+    }
+    @at-root #{&}-item {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 99;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        cursor: pointer;
+        display: none;
+
+    }
+    @at-root #{&}-pagination {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        z-index: 9999;
+        font-size: 0;
+    }
+    @at-root #{&}-paginationItem {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #fff;
+        background-color: rgba(255, 255, 255, 0.8);
+        transition: background-color .3s ease-in-out;
+        cursor: pointer;
+        @at-root #{&} + #{&} {
+            margin-left: 10px;
+        }
+        @at-root #{&}:hover {
+            background-color: $mainTone;
+        }
+        @at-root #{&}.is-cur {
+            background-color: $mainTone;
+        }
+    }
+}

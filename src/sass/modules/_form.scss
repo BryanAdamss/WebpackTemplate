@@ -1,0 +1,196 @@
+@charset "UTF-8";
+//所用被禁用的元素样式
+:disabled, [disabled], [aria-disabled] {
+    @include disabled();
+    @at-root #{&}.c-BorderBtn {
+        // 禁用状态的borderBtn
+        background-color: transparent !important;
+    }
+}
+
+// 去除input在chrome下自动填充的黄色
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px white inset;
+}
+
+input[type=text]:focus, input[type=password]:focus, textarea:focus {
+    -webkit-box-shadow: 0 0 0 1000px white inset;
+}
+
+// input[type="text"]、input[type="password"]、select、textarea
+.c-Field {
+    display: block;
+    width: 100%;
+    height: 2em;
+    line-height: 2em;
+    padding: 0 .8em;
+    border: 1px solid $baseBorderColor;
+    transition: all .3s ease-in-out;
+    @at-root #{&}--radius {
+        border-radius: $baseBorderRadius;
+    }
+    @at-root input#{&} {
+        // select如果noAppearance，chrome上会没有右侧箭头，所以只对input生效
+        @extend %noAppearance;
+    }
+    @at-root #{&}:focus {
+        // 聚焦阴影
+        border-color: $mainTone;
+        outline: 0;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba($mainTone, .6);
+    }
+    @at-root textarea#{&} {
+        resize: none;
+        line-height: inherit;
+        height: auto;
+        padding-top: .6em;
+        padding-bottom: .6em;
+        word-wrap: break-word;
+        word-break: break-all;
+    }
+    @at-root select[multiple]#{&} {
+        min-height: 6em;
+    }
+}
+
+// input[type="file"]、radio、checkbox是无法使用伪元素的(chrome上可能是个bug)，所以折中使用添加标签的形式来模拟
+.c-File {
+    @include inline-block();
+    position: relative;
+    cursor: pointer;
+    input[type="file"] {
+        display: none;
+    }
+}
+
+.c-Radio {
+    @include inline-block();
+    cursor: pointer;
+    position: relative;
+    input[type="radio"] {
+        // 隐藏原先radio
+        display: none;
+        @at-root #{&}:checked ~ .c-Radio-icon:before {
+            // 选择所有前面有input[type="radio"]:checked的.c-Radio-icon:before
+            opacity: 1;
+        }
+        @at-root #{&}[disabled] ~ .c-Radio-icon:after {
+            // radio禁用，置灰
+            border-color: $baseBorderColor;
+        }
+        @at-root #{&}[disabled] ~ .c-Radio-icon:before {
+            // radio禁用，置灰
+            background-color: $baseBorderColor;
+        }
+    }
+    @at-root #{&}-icon {
+        @include inline-block(-0.2em);
+        width: 1em;
+        height: 1em;
+        overflow: hidden;
+        position: relative;
+        // 防止在.c-Radio-icon中有文本
+        text-indent: -9999em;
+        @at-root #{&}:after {
+            // 外环
+            content: "";
+            display: block;
+            width: 1em;
+            height: 1em;
+            position: absolute;
+            top: 50%;
+            right: 0;
+            margin-top: -0.5em;
+            border-radius: 50%;
+            border: 1px solid $mainTone;
+            background-color: transparent;
+        }
+        @at-root #{&}:before {
+            // 内圆
+            content: "";
+            display: block;
+            width: 0.5em;
+            height: 0.5em;
+            position: absolute;
+            top: 50%;
+            right: 0.25em;
+            margin-top: -0.25em;
+            border-radius: 50%;
+            background-color: $mainTone;
+            opacity: 0;
+            transition: opacity .3s ease-in-out;
+        }
+    }
+}
+
+.c-Checkbox {
+    @include inline-block();
+    cursor: pointer;
+    position: relative;
+    input[type="checkbox"] {
+        // 隐藏原先checkbox
+        display: none;
+        @at-root #{&}:checked ~ .c-Checkbox-icon:before {
+            // 选择所有前面有input[type="checkbox"]:checked的.c-Checkbox-icon:before
+            opacity: 1;
+        }
+        @at-root #{&}[disabled] ~ .c-Checkbox-icon:after {
+            // radio禁用，置灰
+            border-color: $baseBorderColor;
+        }
+        @at-root #{&}[disabled] ~ .c-Checkbox-icon:before {
+            // radio禁用，置灰
+            color: $baseBorderColor;
+        }
+    }
+    @at-root #{&}-icon {
+        @include inline-block(-0.2em);
+        width: 1em;
+        height: 1em;
+        overflow: hidden;
+        position: relative;
+        // 防止在.c-Checkbox-icon中有文本
+        text-indent: -9999em;
+        @at-root #{&}:after {
+            // 外环
+            content: "";
+            display: block;
+            width: 1em;
+            height: 1em;
+            position: absolute;
+            top: 50%;
+            right: 0;
+            margin-top: -0.5em;
+            border: 1px solid $mainTone;
+            background-color: transparent;
+        }
+        @at-root #{&}:before {
+            // 内圆
+            content: "\2713";
+            color: $mainTone;
+            // 重写父元素上继承来的text-indent
+            text-indent: -0.2em;
+            text-indent: -0.3em \9
+        ; // ie
+            text-align: center;
+            // 去除i标签自带的倾斜效果
+            font-style: normal;
+            font-size: 0.875em;
+            font-family: $fontSong;
+            display: block;
+            width: 0.5em;
+            height: 0.5em;
+            line-height: 0.5em;
+            position: absolute;
+            top: 50%;
+            right: 0.25em;
+            margin-top: -0.25em;
+            opacity: 0;
+            transition: opacity .3s ease-in-out;
+        }
+    }
+
+}
+
