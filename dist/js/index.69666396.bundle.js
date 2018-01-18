@@ -1,1 +1,0 @@
-webpackJsonp([1],{L8RT:function(e,n){},lVK7:function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var o=t("pTlp"),c=(t.n(o),t("L8RT"));t.n(c);window.onload=function(){var e=document.createElement("a");e.innerHTML="test h1",e.href="b.html",document.body.appendChild(e)}}},["lVK7"]);

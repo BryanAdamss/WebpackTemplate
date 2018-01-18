@@ -15,7 +15,7 @@ const config = {
     HTML_PATH: path.join(PROJECT_PATH, './src/html/'),
     VENDORS_PATH: path.join(PROJECT_PATH, './src/vendors/'), // vendors目录
     NODE_MODULES_PATH: path.join(PROJECT_PATH, './node_modules/'), // node_modules目录
-    ignorePages: ['test'], // 没有入口js文件的html
+    ignorePages: ['test'], // 标识没有入口js文件的html
 };
 
 console.log('\n/-----相关路径-----/\n');

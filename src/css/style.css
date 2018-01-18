@@ -1,3 +1,9 @@
 * {
     color: red;
 }
+
+.a {
+    width: 100px;
+    height: 100px;
+    background: url("../img/1.png") no-repeat center;
+}

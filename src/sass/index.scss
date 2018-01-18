@@ -44,6 +44,7 @@ body {
     }
 }
 
+
 //设置sticky-footer
 @include stickyFooter(60px);
 
@@ -55,13 +56,17 @@ body {
 //    }
 //}
 .bgPolka {
-    @include bgPolka(20px, 3px, tan, yellow);
+    @include bgPolka(20px,
+    3px,
+    tan,
+    yellow);
     width: 200px;
     height: 200px;
 }
 
 .bgCheckboard {
-    @include bgCheckboard(20px, tan);
+    @include bgCheckboard(20px,
+    tan);
     width: 200px;
     height: 200px;
 }
@@ -98,7 +103,8 @@ body {
 
 .c-Db {
     @at-root #{&}-item {
-        @include DoubleWing(100, 200);
+        @include DoubleWing(100,
+        200);
         @at-root #{&}--main {
             background-color: blue;
         }

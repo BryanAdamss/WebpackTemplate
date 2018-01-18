@@ -35,7 +35,8 @@ const webpackProd = { // 生产配置文件
                         options: {
                             minimize: true //css压缩
                         }
-                    }, 'postcss-loader']
+                    }, 'postcss-loader'],
+                    publicPath: '../', // 默认发布路径会是css，会拼接成css/img/x.png，所以需要重置
                 })
             },
             {
@@ -49,7 +50,8 @@ const webpackProd = { // 生产配置文件
                         options: {
                             minimize: true //css压缩
                         }
-                    }, 'postcss-loader', 'sass-loader']
+                    }, 'postcss-loader', 'sass-loader'],
+                    publicPath: '../', // 默认发布路径会是css，会拼接成css/img/x.png，所以需要重置
                 })
             }
         ]
@@ -68,7 +70,7 @@ const webpackProd = { // 生产配置文件
             name: 'commons', // 指定公共 bundle 的名称。HTMLWebpackPlugin才能识别
             filename: 'js/commons.[chunkhash:8].bundle.js'
         }),
-        new UglifyJSPlugin({}),
+        new UglifyJSPlugin(),
     ]
 };
 
