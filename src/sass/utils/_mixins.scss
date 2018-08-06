@@ -78,6 +78,9 @@
 
 // 设置html基本字体样式
 @mixin htmlFont($pageType:PC) {
+    // 设置字体平滑
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     @if (unquote($pageType)==PC) {
         font-size: 16px;
         line-height: 1.625;
